@@ -1,0 +1,565 @@
+html {
+    height: 100vh;
+}
+
+html, body, header {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    width: 100%;
+    height: 60px;
+    background-color: slategrey;
+    position: relative;
+    border-bottom: 3px solid rgb(39, 65, 65);
+}
+
+header a {
+    text-decoration: none;
+    color: white;
+    height: 100%;
+}
+
+header a .naslov h1 {
+    position: absolute;
+    top: 25%;
+    margin-left: 1%;
+    vertical-align: middle;
+    display: inline;
+}
+
+.naslov {
+    display: inline;
+    vertical-align: middle;
+    height: 100%;
+    line-height: 25%;
+}
+
+a[href="#tijelo"] {
+    float: left;
+}
+
+a[href="#zaglavlje"] {
+    padding: 0.6%;
+    float: right;
+}
+
+#zaglavlje:target + nav {
+    display: block;
+}
+    
+#tijelo:target > nav {
+    display: none;
+}
+
+main {
+    height: auto;
+}
+
+nav {
+    display: none;
+    background-color: slategray;
+    height: 100%;
+    width: 16vw;
+    position: absolute;
+    float: right;
+    right: 0;
+    border-left: 3px solid darkslategray;
+    margin: 0;
+    z-index: 1;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    width: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    width: inherit;
+    color: white;
+    padding: 8%;
+    background-color: gray;
+    border-bottom: 2px solid darkslategray;
+    /*float: right;*/
+    display: block;
+}
+
+nav ul li a:hover{
+    background-color: lightblue;
+}
+
+footer {
+    border-top: 2px solid rgb(72, 80, 90);
+    margin-top: 10%;
+    padding-top: 2%;
+    background-color: slategray;
+    width: 100%;
+    text-align: center;
+    z-index: -1;
+}
+
+
+header {
+    width: 100%;
+    height: 80px;
+}
+
+header a[href="./index.html"], header a[href="../index.html"] {
+    float:  left;
+}
+
+a[href="#tijelo"] {
+    float: left;
+    width: 30%;
+}
+
+a[href="#zaglavlje"] {
+    float: right;
+}
+
+header h1 {
+    display: inline;
+}
+
+div {
+    display: block;
+}
+
+.animacija {
+    margin: auto;
+    margin-top: 2%;
+    width: 500px;
+    height: 550px;
+    overflow: hidden;
+    position: relative;
+}
+
+.animacija figure {
+    margin: 0;
+    position: absolute;
+    animation: slajdanje 10s infinite;
+    height: 550px;
+    left: 500px;
+    width: 500px;
+}
+
+.animacija figure img {
+    height: 500px;
+}
+
+.animacija figure figcaption {
+    text-align: center;
+}
+
+#slika2 {
+    animation-delay: 2.5s;
+}
+
+#slika3 {
+    animation-delay: 5s;
+}
+
+#slika4 {
+    animation-delay: 7.5s;
+}
+
+@keyframes slajdanje {
+    0%{
+        top: 0;
+        left: 500px;
+    }
+    25%{
+        top: 0;
+        left: 0px;
+    }
+    50%{
+        bottom: -1000px;
+        left: -500px;
+    }
+    75%{
+        bottom: -1000px;
+        left: 500px;
+    }
+}
+
+.clanci {
+    margin: auto;
+    margin-left: 0%;
+}
+
+.clanci article{
+    display: table-cell;
+    width: 20%;
+    padding: 0% 3%;
+}
+
+.clanci article p {
+    text-align: justify;
+}
+
+.autor {
+    margin: 0 auto;
+    width: 30%;
+}
+
+.autor ul {
+    display: table;
+    margin: 0 auto;
+}
+
+.obrazac_registracije, .obrazac_prijave, .obrazac_prikaza, .obrazac_multimedije {
+    margin: auto;
+    margin-top: 2%;
+    width: 30%;
+    height: auto;
+    text-align: center;
+    border-radius: 20px;
+    padding: 2%;
+    border: 2px solid darkslategray;
+    background-color: lightgray;
+}
+
+.obrazac_registracije form {
+    padding: 2%;
+}
+
+table {
+    width: auto;
+    margin: auto;
+    margin: 2%;
+}
+
+table, th, td {
+    border: 2px solid gray;
+    border-collapse: collapse;
+}
+
+
+#mala figure {
+    margin: auto;
+    margin-top: 2%;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+#mala figure img {
+    margin: 0;
+    position: absolute;
+    height: 200px;
+    width: 200px;
+}
+
+#velika {
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+#mala {
+    display: block;
+}
+
+#velika {
+    display: none;
+}
+
+
+#tijelo:target #mala{
+    display: block;
+}
+
+#tijelo:target #velika, #zaglavlje:target #velika {
+    display: none;
+}
+
+#zaglavlje:target ~ main #mala {
+    display: block;
+}
+
+#zaglavlje:target ~ main #velika {
+    display: none;
+}
+
+#mala:target {
+    display: block;
+}
+
+#mala:target, :target ~ #mala {
+    display: block;
+}
+
+#mala:target ~ #velika {
+    display: none;
+}
+
+
+#velika:target {
+    display: block;
+}
+
+#mala {
+    display: none;
+}
+
+
+@media screen and (min-width: 390px) and (max-width: 500px) and (min-height: 844px) and (max-height: 900px) {
+
+    * {
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    }
+
+    body, main, header, footer {
+        width: 100vw;
+    }
+
+    .autor {
+        width: 100%;
+    }
+
+    iframe, video {
+        height: auto;
+        width: 200px;
+    }
+
+    .animacija {
+        margin: auto;
+        margin-top: 2%;
+        width: 200px;
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .animacija figure {
+        margin: 0;
+        position: absolute;
+        animation: slajdanje 10s infinite;
+        height: 250px;
+        left: 200px;
+        width: 200px;
+    }
+    
+    .animacija figure img {
+        height: 200px;
+        width: 200px;
+    }
+
+    nav {
+        width: 100%;
+        height: auto;
+        display: none;
+        position: inherit;
+        border: 0;
+        background-color: gray;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    nav ul {
+        margin: 0 auto;
+    }
+
+    nav ul li {
+        width: auto;
+        margin: 0 auto;
+        display: inline-block;
+        border: 0;
+        padding: 1%;
+    }
+
+    nav ul li a {
+        border: 0;
+        margin: 0 auto;
+        padding: 1%;
+    }
+
+    header {
+        background-color: slateblue;
+        height: 78px;
+    }
+
+    header h1 {
+        font-size: 120%;
+    }
+
+    a[href="#tijelo"] {
+        float: left;
+    }
+
+    a[href="#zaglavlje"] {
+        padding: 0;
+        right: 0;
+    }
+
+    footer {
+        background-color: darkslateblue;
+        color: white;
+    }
+
+    
+
+    .clanci article {
+        display: block;
+        width: 100%;
+    }
+
+    .obrazac_registracije, .obrazac_prijave, .obrazac_prikaza, .obrazac_multimedije {
+        width: 70%;
+    }
+    
+    form {
+        width: 100%;
+    }
+
+    form  label {
+        display: block;
+    }
+
+    form input {
+        width: 70%;
+    }
+
+    form textarea {
+        width: 70%;
+    }
+
+}
+
+
+@media screen and (min-width: 501px) and (max-width: 820px) and (min-height: 901px) and (max-height: 1180px) {
+
+    * {
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        width: 100vw;
+    }
+    
+    main, header, footer {
+        width: 100%;
+    }
+
+    .autor {
+        width: 100%;
+    }
+
+    iframe, video {
+        height: auto;
+        width: 200px;
+    }
+
+    .animacija {
+        margin: auto;
+        margin-top: 2%;
+        width: 200px;
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .animacija figure {
+        margin: 0;
+        position: absolute;
+        animation: slajdanje 10s infinite;
+        height: 250px;
+        left: 200px;
+        width: 200px;
+    }
+    
+    .animacija figure img {
+        height: 200px;
+        width: 200px;
+    }
+
+    nav {
+        width: 100%;
+        height: auto;
+        display: none;
+        position: inherit;
+        border: 0;
+        background-color: gray;
+        margin: 0 auto;
+        padding: 0;
+    }
+
+    nav ul {
+        margin: 0 auto;
+    }
+
+    nav ul li {
+        width: auto;
+        margin: 0 auto;
+        display: block;
+        border: 0;
+        padding: 1%;
+    }
+
+    nav ul li a {
+        border: 0;
+        margin: 0 auto;
+        padding: 1%;
+    }
+
+    header {
+        background-color: darkslategray;
+        height: 78px;
+    }
+
+    header h1 {
+        font-size: 120%;
+    }
+
+    a[href="#tijelo"] {
+        float: left;
+    }
+
+    a[href="#zaglavlje"] {
+        padding: 0;
+        right: 0;
+    }
+
+    footer {
+        background-color: darkslategray;
+        color: white;
+    }
+
+    
+
+    .clanci article {
+        display: block;
+        width: 100%;
+    }
+
+    .obrazac_registracije, .obrazac_prijave, .obrazac_prikaza, .obrazac_multimedije {
+        width: 70%;
+    }
+    
+    form {
+        width: 100%;
+    }
+
+    form  label {
+        display: block;
+    }
+
+    form input {
+        width: 70%;
+    }
+
+    form textarea {
+        width: 70%;
+    }
+}

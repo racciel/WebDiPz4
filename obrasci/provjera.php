@@ -1,6 +1,9 @@
 <?php
 $putanja = getcwd();
-include('../baza.class.php');
+include('baza.class.php');
+include('dnevnik.class.php');
+session_start();
+
 $b = new Baza();
 $b->spojiDB();
 $id = $_GET['id'];

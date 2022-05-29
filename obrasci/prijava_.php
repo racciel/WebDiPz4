@@ -1,8 +1,7 @@
 <?php
-session_start();
 
-$putanja = getcwd();
 include('../baza.class.php');
+
 $b = new Baza();
 $b->spojiDB();
 $korime = $_GET['username'];

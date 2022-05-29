@@ -1,8 +1,22 @@
 <?php
-// Radi 4ai,
+// Radi 4ai, 4aiii, 4bi,
+$putanja = getcwd();
 include('baza.class.php');
 include('dnevnik.class.php');
 session_start();
+
+$dnevnik = new Dnevnik(); 
+
+$putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+
+$korisnik = $_SESSION['username'];
+
+
+
+$tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+$dnevnik->setNazivDatoteke($putanjaDnevnik);
+$dnevnik->spremiDnevnik($tekst);
+
 ?>
 <!DOCTYPE html>
 <html lang="hr">
@@ -26,10 +40,6 @@ session_start();
         }
     </style>
     <link rel="stylesheet" href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="./js/aleja_jquery.js" type="text/javascript"></script>
 </head>
     <body id="tijelo">
         <header id="zaglavlje">
@@ -107,58 +117,111 @@ session_start();
         <?php 
             $b = new Baza();
             $b->spojiDB();
-            $upit = "SELECT * FROM dz4_korisnikprofil";
-            $odgovor = $b->selectDB($upit);
-            if($odgovor) {
-                while($red = $odgovor->fetch_array()) {
+            if($_SESSION['tip'] == 1) {
+                $upit = "SELECT * FROM dz4_korisnikprofil";
+                $odgovor = $b->selectDB($upit);
+                if($odgovor) {
+                    while($red = $odgovor->fetch_array()) {
+                        $aidi = $red['ID'];
+                        
+                        echo "
+                        <tr>
+                            <td>
+                                <a href='./obrasci/registracija.php?id=$aidi'>
+                                    ".$red['ID']."
+                                </a>
+                            </td>
+                            <td>
+                                ".$red['korisnickoIme']."
+                            </td>
+                            <td>
+                                ".$red['lozinka']."
+                            </td>
+                            <td>
+                                ".$red['hashLozinke']."
+                            </td>
+                            <td>
+                                ".$red['salt']."
+                            </td>
+                            <td>
+                                ".$red['email']."
+                            </td>
+                            <td>
+                                ".$red['aktiviran']."
+                            </td>
+                            <td>
+                                ".$red['blokiran']."
+                            </td>
+                            <td>
+                                ".$red['posljednjaPrijava']."
+                            </td>
+                            <td>
+                                ".$red['kolacici']."
+                            </td>
+                            <td>
+                                ".$red['brojpokusaja']."
+                            </td>
+                            <td>
+                                ".$red['Uloga_ID']."
+                            </td>
+                            <td>
+                                <a href='./obrisi_korisnika.php?id=$aidi'>
+                                    Obriši
+                                </a>
+                            </td>
+                        </tr>
+                        ";
+                    }
+                }
+            }
+            else {
+                $upit = "SELECT * FROM dz4_korisnikprofil WHERE id=".$_SESSION['id'];
+                $odgovor = $b->selectDB($upit);
+                if($odgovor) {
+                    $red = $odgovor->fetch_array();
                     $aidi = $red['ID'];
                     echo "
-                    <tr>
-                        <td>
-                            <a href='./obrasci/registracija.php?id=$aidi'>
-                                ".$red['ID']."
-                            </a>
-                        </td>
-                        <td>
-                            ".$red['korisnickoIme']."
-                        </td>
-                        <td>
-                            ".$red['lozinka']."
-                        </td>
-                        <td>
-                            ".$red['hashLozinke']."
-                        </td>
-                        <td>
-                            ".$red['salt']."
-                        </td>
-                        <td>
-                            ".$red['email']."
-                        </td>
-                        <td>
-                            ".$red['aktiviran']."
-                        </td>
-                        <td>
-                            ".$red['blokiran']."
-                        </td>
-                        <td>
-                            ".$red['posljednjaPrijava']."
-                        </td>
-                        <td>
-                            ".$red['kolacici']."
-                        </td>
-                        <td>
-                            ".$red['brojpokusaja']."
-                        </td>
-                        <td>
-                            ".$red['Uloga_ID']."
-                        </td>
-                        <td>
-                            <a href='obrisi_korisnika?id=$aidi'>
-                                Obriši
-                            </a>
-                        </td>
-                    </tr>
-                    ";
+                        <tr>
+                            <td>
+                                <a href='./obrasci/registracija.php?id=$aidi'>
+                                    ".$red['ID']."
+                                </a>
+                            </td>
+                            <td>
+                                ".$red['korisnickoIme']."
+                            </td>
+                            <td>
+                                ".$red['lozinka']."
+                            </td>
+                            <td>
+                                ".$red['hashLozinke']."
+                            </td>
+                            <td>
+                                ".$red['salt']."
+                            </td>
+                            <td>
+                                ".$red['email']."
+                            </td>
+                            <td>
+                                ".$red['aktiviran']."
+                            </td>
+                            <td>
+                                ".$red['blokiran']."
+                            </td>
+                            <td>
+                                ".$red['posljednjaPrijava']."
+                            </td>
+                            <td>
+                                ".$red['kolacici']."
+                            </td>
+                            <td>
+                                ".$red['brojpokusaja']."
+                            </td>
+                            <td>
+                                ".$red['Uloga_ID']."
+                            </td>
+                        </tr>
+                        ";
                 }
             }
             ?>
@@ -166,6 +229,36 @@ session_start();
         
     </table>
         
+    <?php 
+        if($_SESSION['tip'] == 1) {
+            echo "
+            <table>
+            <caption>Dnevnik</caption>
+            <thead>
+                <tr>
+                    <th>Korisnk</th>
+                    <th>Uloga</th>
+                    <th>Apsolutna putanja skritpe</th>
+                    <th>Datum i vremena pristupa</th>
+                </tr>
+            </thead>
+            ";            
+
+            $niz = $dnevnik->citajDnevnik();
+            
+            foreach($niz as $k=>$v){
+                $zapis = explode(" ", $v);
+                echo("<tr><td>".$zapis[2]."</td><td>".$zapis[3]."</td><td>".$zapis[4]."</td><td>".$zapis[0]." ".$zapis[1]."</td></tr>");
+            }
+
+            echo "
+            </table>
+            ";
+            
+
+        }
+    
+    ?>
                    
     </main>
     <footer>

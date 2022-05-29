@@ -1,5 +1,20 @@
 <?php
+include('../baza.class.php');
+include('../dnevnik.class.php');
 session_start();
+
+$dnevnik = new Dnevnik(); 
+$putanja = dirname(getcwd());
+$putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+
+if(isset($_SESSION['username'])) {
+    $korisnik = $_SESSION['username'];
+
+    $tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+    $dnevnik->setNazivDatoteke($putanjaDnevnik);
+    $dnevnik->spremiDnevnik($tekst);
+}
+    
 ?>
 <!DOCTYPE html>
 <html lang="hr">

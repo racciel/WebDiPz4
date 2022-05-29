@@ -1,7 +1,20 @@
 <?php
 session_start();
+include "baza.class.php";
+include "dnevnik.class.php";
 $putanja = getcwd();
-include "zaglavlje.php";
+$dnevnik = new Dnevnik(); 
+
+$putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+
+$korisnik = $_SESSION['username'];
+
+
+
+$tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+$dnevnik->setNazivDatoteke($putanjaDnevnik);
+$dnevnik->spremiDnevnik($tekst);
+
 //declare (strict_types=1);
 ?>
 
@@ -261,22 +274,8 @@ include "zaglavlje.php";
             // get current working directory
             // superglobalne varijable
             // $GLOBALS, $_SERVER, $_GET, $_COOKIE...
-
-            $tekst = " Skripta:" . $_SERVER['PHP_SELF'];
-            $dnevnik = new Dnevnik(); 
-            // ako je dnevnik.log na poslužitelju barka, obavezno chmod 777 dnevnik.log
-            $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
-            $dnevnik->setNazivDatoteke($putanjaDnevnik);
-            $dnevnik->spremiDnevnik($tekst);
-            
-            $niz = $dnevnik->citajDnevnik();
-            
-            foreach($niz as $k=>$v){
-                echo($k." ".$v."<br>");
-            }
-            
             ?>
-
+ 
         </main>
 
         <footer>

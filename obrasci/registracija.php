@@ -2,9 +2,27 @@
 session_start();
 // Radi ai, aii, aiii, bi, bii, ci, cii, ciii, civ
 
-$putanja = getcwd();
+$putanja = dirname(getcwd());
 include('../baza.class.php');
 include('../dnevnik.class.php');
+session_start();
+
+$dnevnik = new Dnevnik(); 
+
+$putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+
+$korisnik = $_SESSION['username'];
+
+
+
+if(isset($_SESSION['username'])) {
+    $korisnik = $_SESSION['username'];
+
+    $tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+    $dnevnik->setNazivDatoteke($putanjaDnevnik);
+    $dnevnik->spremiDnevnik($tekst);
+}
+
 $b = new Baza();
 $b->spojiDB();
 $nijeispunjeno = false;

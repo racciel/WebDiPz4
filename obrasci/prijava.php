@@ -1,8 +1,23 @@
 <?php
-session_start();
 // Radi: 3a, 3b, 3ci, 3cii
+$putanja = dirname(getcwd());
+include('../baza.class.php');
+include('../dnevnik.class.php');
+session_start();
 
-include "../baza.class.php";
+$dnevnik = new Dnevnik(); 
+
+$putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+
+if(isset($_SESSION['username'])) {
+    $korisnik = $_SESSION['username'];
+
+    $tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+    $dnevnik->setNazivDatoteke($putanjaDnevnik);
+    $dnevnik->spremiDnevnik($tekst);
+}
+
+
 $b = new Baza();
 $b->spojiDB();
 

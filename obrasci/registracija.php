@@ -1,9 +1,40 @@
 <?php
+session_start();
+// Radi ai, aii, aiii, bi, bii, ci, cii, ciii, civ
+
 $putanja = getcwd();
 include('../baza.class.php');
 include('../dnevnik.class.php');
 $b = new Baza();
 $b->spojiDB();
+$nijeispunjeno = false;
+if(isset($_GET['imeiprezime']) && 
+    isset($_GET['godinarod']) &&
+    isset($_GET['mail']) &&
+    isset($_GET['korime']) &&
+    isset($_GET['lozinka']) &&
+    isset($_GET['plozinka']) &&
+    isset($_GET['kolacici'])) {
+        if($_GET['imeiprezime'] == null ||
+            $_GET['godinarod'] == null ||
+            $_GET['mail'] == null ||
+            $_GET['korime'] == null ||
+            $_GET['lozinka'] == null ||
+            $_GET['plozinka'] == null ||
+            $_GET['kolacici'] == null
+        ) {
+            $nijeispunjeno = true;
+        }
+    }
+
+    if(isset($_GET['edit'])) {
+        $nijeispunjeno = false;
+    }
+
+    if($nijeispunjeno) {
+        echo("<script>alert('Sva polja moraju biti popunjena!');</script>");
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="hr">
@@ -29,8 +60,7 @@ $b->spojiDB();
 
             <a href="#zaglavlje">
                 <img src="../materijali/menu.png" alt="Menu icon" width="60" height="60">
-            </a>
-            
+            </a> 
         </header>
 
         <nav>
@@ -89,11 +119,18 @@ $b->spojiDB();
                     <label for="plozinka">Potvrda lozinke: </label>
                     <input type="password" id="plozinka" name="plozinka" maxlength="50" required><br><br>
                     <label for="kolacici">Kolačići: </label>
-                    <select name="kolacici" id="kolacici">
+                    <select multiple name="kolacici" id="kolacici">
                         <option value="0">nužni</option>
                         <option value="1">marketinški</option>
                         <option value="2">analitički</option>
                     </select><br><br>
+                    <?php 
+                        if(isset($_GET['id'])) {
+                            $aidi = $_GET['id'];
+                            echo "<input type='hidden' value=$aidi name='id' />";
+                            echo "<input type='hidden' value='edit' name='edit' />";
+                        }
+                    ?>
                 </form>
                 <input type="submit" form="rega" value="POŠALJI">
             </div>
@@ -114,140 +151,239 @@ $b->spojiDB();
     </body>
 </html>
 <?php
-if(!isset($_GET['id'])) {
-    
-    if(isset($_GET['korime'])) {
-    
-        $imeiprezime = $_GET['imeiprezime'];
-        $godinarodenja = $_GET['godinarod'];
-        $mail = $_GET['mail'];
-        $korime = $_GET['korime'];
-        $lozinka = $_GET['lozinka'];
-        $plozinka = $_GET['plozinka'];
-        $kolacici = $_GET['kolacici'];
+if(!$nijeispunjeno) {
+    if(!isset($_GET['id'])) {
+        if(isset($_GET['korime'])) {
+        
+            $imeiprezime = $_GET['imeiprezime'];
+            $godinarodenja = $_GET['godinarod'];
+            $mail = $_GET['mail'];
+            $korime = $_GET['korime'];
+            $lozinka = $_GET['lozinka'];
+            $plozinka = $_GET['plozinka'];
+            $kolacici = $_GET['kolacici'];
 
-        $losidatum = array(
-            false, false,  // DD
-            false,         // .
-            false, false,  // MM
-            false,         // .
-            false, false, false, false, // GGGG
-            false          // .
-    );
+            $losidatum = array(
+                false, false,  // DD
+                false,         // .
+                false, false,  // MM
+                false,         // .
+                false, false, false, false, // GGGG
+                false          // .
+        );
 
-        $varijanta = strlen($godinarodenja);
+            $varijanta = strlen($godinarodenja);
 
-        if(strlen($godinarodenja) !== 11)
-            $losidatum = [true];
+            if(strlen($godinarodenja) !== 11)
+                $losidatum = [true];
 
-        if((int)$godinarodenja[0] > 3)
-            $losidatum[0] = true;
-        if(!is_numeric((int)$godinarodenja[1]))
-            $losidatum[1] = true;
-        if($godinarodenja[2] !== ".")
-            $losidatum[2] = true;
-        if((int)$godinarodenja[3] > 1)
-            $losidatum[3] = true;
-        if(!is_numeric((int)$godinarodenja[4]))
-            $losidatum[4] = true;
-        if($godinarodenja[5] !== ".")
-            $losidatum[5] = true;
-        if(!is_numeric((int)$godinarodenja[6]))
-            $losidatum[6] = true;
-        if(!is_numeric((int)$godinarodenja[7]))
-            $losidatum[7] = true;
-        if(!is_numeric((int)$godinarodenja[8]))
-            $losidatum[8] = true;
-        if(!is_numeric((int)$godinarodenja[9]))
-            $losidatum[9] = true;
-        if($godinarodenja[10] !== ".")
-            $losidatum[10] = true;
+            if((int)$godinarodenja[0] > 3)
+                $losidatum[0] = true;
+            if(!is_numeric((int)$godinarodenja[1]))
+                $losidatum[1] = true;
+            if($godinarodenja[2] !== ".")
+                $losidatum[2] = true;
+            if((int)$godinarodenja[3] > 1)
+                $losidatum[3] = true;
+            if(!is_numeric((int)$godinarodenja[4]))
+                $losidatum[4] = true;
+            if($godinarodenja[5] !== ".")
+                $losidatum[5] = true;
+            if(!is_numeric((int)$godinarodenja[6]))
+                $losidatum[6] = true;
+            if(!is_numeric((int)$godinarodenja[7]))
+                $losidatum[7] = true;
+            if(!is_numeric((int)$godinarodenja[8]))
+                $losidatum[8] = true;
+            if(!is_numeric((int)$godinarodenja[9]))
+                $losidatum[9] = true;
+            if($godinarodenja[10] !== ".")
+                $losidatum[10] = true;
 
-        if(in_array(true, $losidatum))
-            echo '
-            <script>
-                alert("Krivi datum");
-            </script>
-            ';
-
-        $query = "SELECT * FROM korisnikprofil WHERE korisnickoIme like'$korime'";
-
-        $rezultat = $b->selectDB($query);
-        echo "<script>";
-        echo 'let polje = document.getElementById("rega");';
-        echo 'let polje2 = document.getElementsByTagName("label");';
-        if($rezultat){
-            if($rezultat->fetch_array()){
-                echo'
-                for(let i = 0; i < polje.length-1 ; i++) {
-                    polje[i].style.border = "4px solid red";
-                }
-                for(let i in polje2){
-                    polje2[i].style.color = "red";
-                }
+            $datumrodjenja = strtotime($godinarodenja);
+            
+            if(time() - $datumrodjenja < 18 * 31536000){
+                echo '
+                <script>
+                    alert("Korisnik mora imati najmanje 18 godina!");
+                </script>
                 ';
+                die();
+                popuni_polja(); // TODO
             }
-            else {
-                echo'
-                for(let i = 0; i < polje.length-1 ; i++) {
-                    polje[i].style.border = "4px solid green";
-                }
-                for(let i in polje2){
-                    polje2[i].style.color = "green";
-                }
+
+            echo "
+                <script>
+                    alert($kolacici);
+                </script>
+                ";
+
+            if(strlen($kolacici != 1)) {
+                echo '
+                <script>
+                    alert("Unesite jednu opciju kolačića");
+                </script>
                 ';
-            } 
-        }
-        echo "</script>";
+                die();
+            }
+              
+            if(in_array(true, $losidatum))
+                echo '
+                <script>
+                    alert("Krivi datum");
+                </script>
+                ';
 
-        $b->zatvoriDB();
-    }
-}
-else {
+            $query = "SELECT * FROM dz4_korisnikprofil WHERE korisnickoIme like'$korime'";
 
-    $upit = "SELECT * FROM korisnikprofil JOIN korisnikopci ON korisnikopci.id = korisnikprofil.id WHERE korisnikopci.id =".$_GET['id'];
-
-    $odgovor = $b->selectDB($upit);
-
-    if($odgovor) {
-        while($red = $odgovor->fetch_array()){
-            $imeiprezime = $red['ime']." ".$red['prezime'];
-            $godinarod = $red['datumRodenja'];
-            $mail = $red['email'];
-            //$kolacici = $red['kolacici'];
-        }
-    }
-
-    
-    //document.getElementById('kolacici').value = $kolacici;
-
-    echo "
-        <script>
-            alert('$imeiprezime' + ' ' + '$godinarod' + ' ' + '$mail');
-            document.getElementById('imeiprezime').value = '$imeiprezime';
-            document.getElementById('godinarod').value = '$godinarod';
-            document.getElementById('mail').value = '$mail';
-            
-            
-            function provjeriIspravnost() {
-                var xhr = new XMLHttpRequest();
-                var url = 'provjera.php';
-                xhr.open('GET', url, true);
-    
-                xhr.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        console.log(this.responseText);
-                        var odgovor = this.responseText;
+            $rezultat = $b->selectDB($query);
+            echo "<script>";
+            echo 'let polje = document.getElementById("rega");';
+            echo 'let polje2 = document.getElementsByTagName("label");';
+            if($rezultat){
+                if($rezultat->fetch_array()){
+                    echo'
+                    for(let i = 0; i < polje.length-1 ; i++) {
+                        polje[i].style.border = "4px solid red";
                     }
+                    for(let i in polje2) {
+                        polje2[i].style.color = "red";
+                    }
+                    ';
                 }
-            
+                else {
+                    echo'
+                    for(let i = 0; i < polje.length-1 ; i++) {
+                        polje[i].style.border = "4px solid green";
+                    }
+                    for(let i in polje2) {
+                        polje2[i].style.color = "green";
+                    }
+                    ';
+                } 
+            }
+            echo "</script>";
+
+            if(!$nijeispunjeno) {
+                $sol = random_bytes(32);
+
+                $dioimena = explode(" ", $imeiprezime);
+
+                $hashirana = hash('sha256', $lozinka.$sol);
+
+                $upit = "INSERT INTO dz4_korisnikopci VALUES(default, '$dioimena[0]', '$dioimena[1]', '$godinarodenja')";
+                $b->updateDB($upit);
+
+
+
+                $upit = "SELECT id FROM dz4_korisnikopci WHERE ime = '$dioimena[0]' AND prezime = '$dioimena[1]',  datumRodenja = '$godinarodenja')";
+                $upit = $b->selectDB($upit);
+                $red = $upit->fetch_array();
+                $doticni = $red['id'];
+
+                $upit = "INSERT INTO dz4_korisnikprofil VALUES(default, '$korime', '$lozinka', '$hashirana', '$sol', '$mail', 0, 0, NULL, $kolacici, 3, $doticni)";
+                $b->updateDB($upit);
+
+                die();
+
             }
 
-            document.getElementById('korime').addEventListener('blur', provjeriIspravnost);
-            document.getElementById('lozinka').addEventListener('blur', provjeriIspravnost);
 
-        </script>
-    ";
+            $b->zatvoriDB();
+        }
+    }
+    else {
+        if(isset($_GET['edit'])){
+            $imeiprezime = $_GET['imeiprezime'];
+            $godinarodenja = $_GET['godinarod'];
+            $mail = $_GET['mail'];
+            $korime = $_GET['korime'];
+            $lozinka = $_GET['lozinka'];
+            $kolacici = $_GET['kolacici'];
+            $aidi = $_GET['id'];
+
+            $imeiprezime = explode(" ", $imeiprezime);
+
+            $upit = "UPDATE dz4_korisnikprofil SET korisnickoIme = '$korime', kolacici = $kolacici WHERE id = $aidi";
+            $odgovor = $b->updateDB($upit);
+
+            $upit = "UPDATE dz4_korisnikopci SET ime = '$imeiprezime[0]', prezime = '$imeiprezime[1]', datumRodenja = '$godinarodenja' WHERE id = $aidi";
+            $odgovor = $b->updateDB($upit);
+
+
+            echo"
+                <script>
+                    alert('Korisnik pod ID-om $aidi je uspješno ažuriran!');
+                </script>
+            ";
+        }
+        $upit = "SELECT * FROM dz4_korisnikprofil JOIN dz4_korisnikopci ON dz4_korisnikopci.id = dz4_korisnikprofil.id WHERE dz4_korisnikopci.id =".$_GET['id'];
+
+        $odgovor = $b->selectDB($upit);
+
+        if($odgovor) {
+            while($red = $odgovor->fetch_array()){
+                $imeiprezime = $red['ime']." ".$red['prezime'];
+                $godinarod = $red['datumRodenja'];
+                $mail = $red['email'];
+                $user = $red['korisnickoIme'];
+                $hashirana = $red['hashLozinke'];
+                $kolacici = $red['kolacici'];
+            }
+        }
+
+        echo "
+            <script>
+                var poljeimenaiprezimena = document.getElementById('imeiprezime');
+                var poljegeminarod = document.getElementById('godinarod');
+                var poljezamail = document.getElementById('mail');
+                var poljekolacica = document.getElementById('kolacici');
+                var forma = document.getElementById('rega');
+                var poljekolacica = document.getElementById('kolacici');
+
+                poljeimenaiprezimena.disabled = true;
+                poljegeminarod.disabled = true;
+                poljezamail.disabled = true;
+                poljekolacica.disabled = true;
+
+                poljeimenaiprezimena.value = '$imeiprezime';
+                poljegeminarod.value = '$godinarod';
+                poljezamail.value = '$mail';
+                poljekolacica.value = $kolacici;
+
+                function provjeriIspravnost() {
+                    var xhr = new XMLHttpRequest();
+                    var url = './provjera.php?id='+$aidi+'&loz='+document.getElementById('lozinka').value+'&user='+document.getElementById('korime').value;
+                    
+                    xhr.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var odgovor = JSON.parse(this.responseText);
+                            if(odgovor == 't'){
+                                poljeimenaiprezimena.disabled = false;
+                                poljegeminarod.disabled = false;
+                                poljezamail.disabled = false;
+                                poljekolacica.disabled = false;
+                            }
+                            else {
+                                poljeimenaiprezimena.disabled = true;
+                                poljegeminarod.disabled = true;
+                                poljezamail.disabled = true;
+                                poljekolacica.disabled = true;
+                            }
+
+                        }
+                    }
+                    xhr.open('GET', url, true);
+                    xhr.getResponseHeader('Content-type', 'application/json');
+                    xhr.send();
+                
+                }
+
+                document.getElementById('korime').addEventListener('keyup', provjeriIspravnost);
+                document.getElementById('lozinka').addEventListener('keyup', provjeriIspravnost);
+
+            </script>
+        ";
+    }
 }
-
 ?>

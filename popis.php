@@ -1,4 +1,9 @@
-
+<?php
+// Radi 4ai,
+include('baza.class.php');
+include('dnevnik.class.php');
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="hr">
 <head>
@@ -86,19 +91,77 @@
     <main>
 
         <table id="tabla" class="display" style="width: auto; text-align: center;">
-        <caption>Osobnosti</caption>
+        <caption>Obrazac</caption>
         <thead>
-            <tr id="glavaTablice">
+        <tr id="glavaTablice">
                 <th>id korisnika</th>
                 <th>korisničko ime</th>
                 <th>tip</th>
                 <th>status</th>
                 <th>neuspješne prijave</th>
                 <th>datum i vrijeme blokiranja</th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="tijeloTablice">
-
+        <?php 
+            $b = new Baza();
+            $b->spojiDB();
+            $upit = "SELECT * FROM dz4_korisnikprofil";
+            $odgovor = $b->selectDB($upit);
+            if($odgovor) {
+                while($red = $odgovor->fetch_array()) {
+                    $aidi = $red['ID'];
+                    echo "
+                    <tr>
+                        <td>
+                            <a href='./obrasci/registracija.php?id=$aidi'>
+                                ".$red['ID']."
+                            </a>
+                        </td>
+                        <td>
+                            ".$red['korisnickoIme']."
+                        </td>
+                        <td>
+                            ".$red['lozinka']."
+                        </td>
+                        <td>
+                            ".$red['hashLozinke']."
+                        </td>
+                        <td>
+                            ".$red['salt']."
+                        </td>
+                        <td>
+                            ".$red['email']."
+                        </td>
+                        <td>
+                            ".$red['aktiviran']."
+                        </td>
+                        <td>
+                            ".$red['blokiran']."
+                        </td>
+                        <td>
+                            ".$red['posljednjaPrijava']."
+                        </td>
+                        <td>
+                            ".$red['kolacici']."
+                        </td>
+                        <td>
+                            ".$red['brojpokusaja']."
+                        </td>
+                        <td>
+                            ".$red['Uloga_ID']."
+                        </td>
+                        <td>
+                            <a href='obrisi_korisnika?id=$aidi'>
+                                Obriši
+                            </a>
+                        </td>
+                    </tr>
+                    ";
+                }
+            }
+            ?>
         </tbody>
         
     </table>

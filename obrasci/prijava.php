@@ -1,56 +1,64 @@
 <?php
+session_start();
+// Radi: 3a, 3b, 3ci, 3cii
 
-// dirname() -- naddirektorij
+include "../baza.class.php";
+$b = new Baza();
+$b->spojiDB();
 
-// trenutačna putanja pa oduzmi trenutačni direktorij
+if(!isset($_SERVER['HTTPS']) || $_SERVER["HTTPS"] != "on") {
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"], true, 301);
+    exit;
+}
 
-$putanja=dirname(getcwd());
+if(isset($_GET['remember']) && $_GET['remember'] == 'yes') {
+    setcookie("korisnik", $_GET['korime'], false, "/", false);
+}
+else {
+    setcookie("korisnik", "", time() - 3600, "/", false);
+}
 
-include "../zaglavlje.php";
-
-var_dump($_GET);
-if(isset($_GET['gumbSubmit'])){
+if(isset($_GET['gumbSubmit'])) {
+    
     $uzorak="/^[^\s]+$/";
     $greska = "";
-    foreach($_GET as $name=>$v){
+    foreach($_GET as $name=>$v) {
         // empty jel isset ili prazno provjera
-        if(empty($v)){
+        if(empty($v)) {
             $greska.="Niste popunili: ".$name."<br>";
         }
     }
     
     $korime = $_GET['korime'];
     
-    if(!preg_match($uzorak, $_GET['korime'])){
+    if(!preg_match($uzorak, $_GET['korime'])) {
         $greska.="Korisničko ime sadrži razmak!: ".$korime."<br>";
     }
     
-    $lozinka = $_GET['lozinka'];
+    $lozinka = $_GET['lozinka'];    
+
     
-    if(empty($greska)){
-       $veza = new Baza();
-       $veza->spojiDB();
-       
-       $upit = "SELECT * FROM KorisnikProfil WHERE korisnickoIme ='".$korime."' AND lozinka ='".$lozinka."';";
-       
-       $rezultat = $veza->selectDB($upit);
-       if($rezultat!=null){
-           while($red = mysqli_fetch_array($rezultat)){
-               if($red){
-                   $tip = $red['Uloga_ID'];
-               }
-           }
-       }
-       
-    }
-     if(isset($tip)){
+     if(isset($_SESSION['tip'])) {
          setcookie("korisnik", $korime, false, "/", false);
-         setcookie("tip", $tip, false, "/", false);
-         //preusmjeravanje
+         setcookie("tip", $_SESSION['tip'], false, "/", false);
          header("Location: ../index.php");
-         exit;
      }
-    
+
+     echo 
+     "<script>
+        var xhr = new XMLHttpRequest();
+        var url = './prijava_.php?username=$korime&password=$lozinka';
+        
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var odgovor = this.responseText;
+                if(odgovor != '')
+                    alert(odgovor);
+            }
+        }
+        xhr.open('GET', url, true);
+        xhr.send();
+        </script>";
 }
 
 ?>
@@ -127,7 +135,8 @@ if(isset($_GET['gumbSubmit'])){
         <main>
             <div id="greske">
                 <?php
-                echo $greska;
+                if(isset($greska))
+                    echo $greska;
                 ?>
             </div>
             <div class="obrazac_prijave">
@@ -140,6 +149,36 @@ if(isset($_GET['gumbSubmit'])){
                     <a href="../index.php">Zaboravljena lozinka?</a><br><br>
                     <input type="submit" name="gumbSubmit" value="POŠALJI">
                 </form>
+            </div>
+            <div>
+                <?php 
+                    $upit = "SELECT * FROM korisnikprofil WHERE uloga_id = 1 LIMIT 1;";
+                    $odgovor = $b->selectDB($upit);
+                    if($odgovor){
+                        $red = $odgovor->fetch_array();
+                        $korisnicko = $red['korisnickoIme'];
+                        $loz = $red['lozinka'];
+                        echo "<b>Administrator:</b> <br>Korisničko ime: $korisnicko <br> Lozinka: $loz <br><br>";
+                    }
+
+                    $upit = "SELECT * FROM korisnikprofil WHERE uloga_id = 2 LIMIT 1;";
+                    $odgovor = $b->selectDB($upit);
+                    if($odgovor){
+                        $red = $odgovor->fetch_array();
+                        $korisnicko = $red['korisnickoIme'];
+                        $loz = $red['lozinka'];
+                        echo "<b>Moderator:</b> <br>Korisničko ime: $korisnicko <br> Lozinka: $loz <br><br>";
+                    }
+
+                    $upit = "SELECT * FROM korisnikprofil WHERE uloga_id = 3 LIMIT 1;";
+                    $odgovor = $b->selectDB($upit);
+                    if($odgovor){
+                        $red = $odgovor->fetch_array();
+                        $korisnicko = $red['korisnickoIme'];
+                        $loz = $red['lozinka'];
+                        echo "<b>Korisnik:</b> <br>Korisničko ime: $korisnicko <br> Lozinka: $loz <br><br>";
+                    }
+                ?>
             </div>
         </main>
         
@@ -157,3 +196,7 @@ if(isset($_GET['gumbSubmit'])){
         </footer>
     </body>
 </html>
+<?php 
+
+    $b->zatvoriDB();
+?>

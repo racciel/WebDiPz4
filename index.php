@@ -1,4 +1,5 @@
 <?php
+session_start();
 $putanja = getcwd();
 include "zaglavlje.php";
 //declare (strict_types=1);

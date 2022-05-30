@@ -7,14 +7,22 @@ $putanja = getcwd();
 $dnevnik = new Dnevnik(); 
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+$b = new Baza();
+$b->spojiDB();
+if(isset($_SESSION['username'])){
+    $korisnik = $_SESSION['username'];
+    $uloga = $_SESSION['tip'];
+    $putanja = $_SERVER['PHP_SELF'];
 
-$korisnik = $_SESSION['username'];
+    $tekst = $korisnik." ".$uloga." ".$putanja;
+    
+    $upit = "INSERT INTO dz4_dnevnik VALUES(default, '$korisnik', $uloga, '$putanja', NOW())";
 
+    $b->updateDB($upit);
 
-
-$tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
-$dnevnik->setNazivDatoteke($putanjaDnevnik);
-$dnevnik->spremiDnevnik($tekst);
+    $dnevnik->setNazivDatoteke($putanjaDnevnik);
+    $dnevnik->spremiDnevnik($tekst);    
+}
 ?>
 <!DOCTYPE html>
 <html lang="hr">

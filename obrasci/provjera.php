@@ -1,18 +1,17 @@
 <?php
 $putanja = getcwd();
-include('baza.class.php');
-include('dnevnik.class.php');
+include('../baza.class.php');
 session_start();
 
 $b = new Baza();
 $b->spojiDB();
 $id = $_GET['id'];
 
-$upit = "SELECT * FROM dz4_korisnikprofil WHERE id = ".$id;
+$upit = "SELECT * FROM dz4_korisnikprofil WHERE ID = $id";
 $odgovor = $b->selectDB($upit);
 $red = $odgovor->fetch_array();
 
-if($red['hashLozinke'] == hash('sha256', $_GET['loz'].$red['salt']) 
+if($red['lozinka'] == $_GET['loz'] 
     && 
     $red['korisnickoIme'] == $_GET['user']) 
 {

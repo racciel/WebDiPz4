@@ -5,26 +5,31 @@ session_start();
 $putanja = dirname(getcwd());
 include('../baza.class.php');
 include('../dnevnik.class.php');
-session_start();
 
 $dnevnik = new Dnevnik(); 
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
 
 $korisnik = $_SESSION['username'];
-
-
-
-if(isset($_SESSION['username'])) {
+$b = new Baza();
+$b->spojiDB();
+if(isset($_SESSION['username'])){
     $korisnik = $_SESSION['username'];
+    $uloga = $_SESSION['tip'];
+    $putanja = $_SERVER['PHP_SELF'];
 
-    $tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+    $tekst = $korisnik." ".$uloga." ".$putanja;
+    
+    $upit = "INSERT INTO dz4_dnevnik VALUES(default, '$korisnik', $uloga, '$putanja', NOW())";
+
+    $b->updateDB($upit);
+
     $dnevnik->setNazivDatoteke($putanjaDnevnik);
-    $dnevnik->spremiDnevnik($tekst);
+    $dnevnik->spremiDnevnik($tekst);    
 }
 
 $b = new Baza();
-$b->spojiDB();
+$veza = $b->spojiDB();
 $nijeispunjeno = false;
 if(isset($_GET['imeiprezime']) && 
     isset($_GET['godinarod']) &&
@@ -268,6 +273,7 @@ if(!$nijeispunjeno) {
                         polje2[i].style.color = "red";
                     }
                     ';
+                    $zauzeto = true;
                 }
                 else {
                     echo'
@@ -278,35 +284,33 @@ if(!$nijeispunjeno) {
                         polje2[i].style.color = "green";
                     }
                     ';
+                    $zauzeto = false;
                 } 
             }
             echo "</script>";
 
             if(!$nijeispunjeno) {
-                $sol = random_bytes(32);
+                if(!$zauzeto){
+                    $datum = $_GET['godinarod'];
+                    $sol = random_bytes(32);
 
-                $dioimena = explode(" ", $imeiprezime);
+                    $dioimena = explode(" ", $imeiprezime);
 
-                $hashirana = hash('sha256', $lozinka.$sol);
+                    $hashirana = hash('sha256', $lozinka.$sol);
 
-                $upit = "INSERT INTO dz4_korisnikopci VALUES(default, '$dioimena[0]', '$dioimena[1]', '$godinarodenja')";
-                $b->updateDB($upit);
-
+                    $preslozeno = $datum[6].$datum[7].$datum[8].$datum[9]."-".$datum[0].$datum[1]."-".$datum[3].$datum[4];
 
 
-                $upit = "SELECT id FROM dz4_korisnikopci WHERE ime = '$dioimena[0]' AND prezime = '$dioimena[1]',  datumRodenja = '$godinarodenja')";
-                $upit = $b->selectDB($upit);
-                $red = $upit->fetch_array();
-                $doticni = $red['id'];
+                    $upit = "INSERT INTO dz4_korisnikopci VALUES(default, '$dioimena[0]', '$dioimena[1]', '$preslozeno')";
+                    $odgovor = $b->updateDB($upit);
+                    $doticni = mysqli_insert_id($veza);
 
-                $upit = "INSERT INTO dz4_korisnikprofil VALUES(default, '$korime', '$lozinka', '$hashirana', '$sol', '$mail', 0, 0, NULL, $kolacici, 3, $doticni)";
-                $b->updateDB($upit);
+                    $upit = "INSERT INTO dz4_korisnikprofil VALUES(default, '$korime', '$lozinka', '$hashirana', '$sol', '$mail', 0, 0, NULL, $kolacici, 5, 3, $doticni)";
+                    $b->updateDB($upit);
 
-                die();
-
+                    die();
+                }
             }
-
-
             $b->zatvoriDB();
         }
     }
@@ -375,6 +379,7 @@ if(!$nijeispunjeno) {
                     
                     xhr.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
+                            console.log(this.responseText);
                             var odgovor = JSON.parse(this.responseText);
                             if(odgovor == 't'){
                                 poljeimenaiprezimena.disabled = false;

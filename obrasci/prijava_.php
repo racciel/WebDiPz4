@@ -43,7 +43,7 @@ else {
     echo('Ne postoji korisnik s tim korisničkim imenom');
 }
 
-//header('Content-Type: text/xml');
+header('Content-Type: text/xml');
 /*if($odgovor) {
     echo('t');
 }

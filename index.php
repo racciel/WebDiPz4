@@ -4,16 +4,24 @@ include "baza.class.php";
 include "dnevnik.class.php";
 $putanja = getcwd();
 $dnevnik = new Dnevnik(); 
-
+$b = new Baza();
+$b->spojiDB();
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+if(isset($_SESSION['username'])){
+    $korisnik = $_SESSION['username'];
+    $uloga = $_SESSION['tip'];
+    $putanja = $_SERVER['PHP_SELF'];
 
-$korisnik = $_SESSION['username'];
+    $tekst = $korisnik." ".$uloga." ".$putanja;
+    
+    $upit = "INSERT INTO dz4_dnevnik VALUES(default, '$korisnik', $uloga, '$putanja', NOW())";
 
+    $b->updateDB($upit);
 
+    $dnevnik->setNazivDatoteke($putanjaDnevnik);
+    $dnevnik->spremiDnevnik($tekst);    
+}
 
-$tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
-$dnevnik->setNazivDatoteke($putanjaDnevnik);
-$dnevnik->spremiDnevnik($tekst);
 
 //declare (strict_types=1);
 ?>
@@ -292,3 +300,7 @@ $dnevnik->spremiDnevnik($tekst);
         </footer>
     </body>
 </html>
+<?php 
+
+$b->zatvoriDB();
+?>

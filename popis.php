@@ -1,5 +1,5 @@
 <?php
-// Radi 4ai, 4aiii, 4bi,
+// Radi 4ai, 4aii, 4aiii, 4bi
 $putanja = getcwd();
 include('baza.class.php');
 include('dnevnik.class.php');
@@ -8,14 +8,22 @@ session_start();
 $dnevnik = new Dnevnik(); 
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
+$b = new Baza();
+$b->spojiDB();
+if(isset($_SESSION['username'])){
+    $korisnik = $_SESSION['username'];
+    $uloga = $_SESSION['tip'];
+    $putanja = $_SERVER['PHP_SELF'];
 
-$korisnik = $_SESSION['username'];
+    $tekst = $korisnik." ".$uloga." ".$putanja;
+    
+    $upit = "INSERT INTO dz4_dnevnik VALUES(default, '$korisnik', $uloga, '$putanja', NOW())";
 
+    $b->updateDB($upit);
 
-
-$tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
-$dnevnik->setNazivDatoteke($putanjaDnevnik);
-$dnevnik->spremiDnevnik($tekst);
+    $dnevnik->setNazivDatoteke($putanjaDnevnik);
+    $dnevnik->spremiDnevnik($tekst);    
+}
 
 ?>
 <!DOCTYPE html>
@@ -100,17 +108,29 @@ $dnevnik->spremiDnevnik($tekst);
     
     <main>
 
+    <form action="popis.php" method="GET">
+        <select name="sort">
+            <option value="0">Silazno</option>
+            <option value="1">Uzlazno</option>
+        </select>
+        <input type="submit" value="Primijeni">
+    </form>
         <table id="tabla" class="display" style="width: auto; text-align: center;">
         <caption>Obrazac</caption>
         <thead>
         <tr id="glavaTablice">
                 <th>id korisnika</th>
                 <th>korisničko ime</th>
-                <th>tip</th>
-                <th>status</th>
-                <th>neuspješne prijave</th>
-                <th>datum i vrijeme blokiranja</th>
-                <th></th>
+                <th>lozinka</th>
+                <th>hashirana lozinka</th>
+                <th>sol</th>
+                <th>e-mail</th>
+                <th>aktiviran</th>
+                <th>blokiran</th>
+                <th>vrijeme zadnje prijave</th>
+                <th>kolačići</th>
+                <th>broj pokusaja</th>
+                <th>uloga</th>
             </tr>
         </thead>
         <tbody id="tijeloTablice">
@@ -118,7 +138,13 @@ $dnevnik->spremiDnevnik($tekst);
             $b = new Baza();
             $b->spojiDB();
             if($_SESSION['tip'] == 1) {
-                $upit = "SELECT * FROM dz4_korisnikprofil";
+
+                if(isset($_GET['sort']) && $_GET['sort'] == 1)
+                    $upit = "SELECT * FROM dz4_korisnikprofil ORDER BY id ASC";
+                else
+                    $upit = "SELECT * FROM dz4_korisnikprofil ORDER BY id DESC";
+                
+                
                 $odgovor = $b->selectDB($upit);
                 if($odgovor) {
                     while($red = $odgovor->fetch_array()) {
@@ -242,15 +268,37 @@ $dnevnik->spremiDnevnik($tekst);
                     <th>Datum i vremena pristupa</th>
                 </tr>
             </thead>
-            ";            
-
+            "; 
+            
+            $upit = "SELECT * FROM dz4_dnevnik";
+            $odgovor = $b->selectDB($upit);
+            if($odgovor) {
+                while($red = $odgovor->fetch_array()) {
+                    echo("<tr>
+                            <td>"
+                            .$red['korisnik'].
+                            "</td>
+                            <td>"
+                            .$red['uloga'].
+                            "</td>
+                            <td>"
+                            .$red['putanja'].
+                            "</td>
+                            <td>"
+                            .$red['datumVrijeme']."
+                            </td>
+                            </tr>");
+                }
+            }
+            
+/*
             $niz = $dnevnik->citajDnevnik();
             
             foreach($niz as $k=>$v){
                 $zapis = explode(" ", $v);
                 echo("<tr><td>".$zapis[2]."</td><td>".$zapis[3]."</td><td>".$zapis[4]."</td><td>".$zapis[0]." ".$zapis[1]."</td></tr>");
             }
-
+*/
             echo "
             </table>
             ";

@@ -8,13 +8,21 @@ session_start();
 $dnevnik = new Dnevnik(); 
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
-
-if(isset($_SESSION['username'])) {
+$b = new Baza();
+$b->spojiDB();
+if(isset($_SESSION['username'])){
     $korisnik = $_SESSION['username'];
+    $uloga = $_SESSION['tip'];
+    $putanja = $_SERVER['PHP_SELF'];
 
-    $tekst = $korisnik." ".$_SESSION['tip']." ".$_SERVER['PHP_SELF'];
+    $tekst = $korisnik." ".$uloga." ".$putanja;
+    
+    $upit = "INSERT INTO dz4_dnevnik VALUES(default, '$korisnik', $uloga, '$putanja', NOW())";
+
+    $b->updateDB($upit);
+
     $dnevnik->setNazivDatoteke($putanjaDnevnik);
-    $dnevnik->spremiDnevnik($tekst);
+    $dnevnik->spremiDnevnik($tekst);    
 }
 
 
@@ -35,29 +43,9 @@ else {
 
 if(isset($_GET['gumbSubmit'])) {
     
-    $uzorak="/^[^\s]+$/";
-    $greska = "";
-    foreach($_GET as $name=>$v) {
-        // empty jel isset ili prazno provjera
-        if(empty($v)) {
-            $greska.="Niste popunili: ".$name."<br>";
-        }
-    }
-    
     $korime = $_GET['korime'];
     
-    if(!preg_match($uzorak, $_GET['korime'])) {
-        $greska.="Korisničko ime sadrži razmak!: ".$korime."<br>";
-    }
-    
     $lozinka = $_GET['lozinka'];    
-
-    
-     if(isset($_SESSION['tip'])) {
-         setcookie("korisnik", $korime, false, "/", false);
-         setcookie("tip", $_SESSION['tip'], false, "/", false);
-         header("Location: ../index.php");
-     }
 
      echo 
      "<script>
@@ -76,6 +64,12 @@ if(isset($_GET['gumbSubmit'])) {
         </script>";
 }
 
+if(isset($_SESSION['tip'])) {
+    setcookie("korisnik", $korime, false, "/", false);
+    setcookie("tip", $_SESSION['tip'], false, "/", false);
+
+    header("Location: ./../index.php");
+}
 ?>
 
 
@@ -148,12 +142,7 @@ if(isset($_GET['gumbSubmit'])) {
         </nav>
         
         <main>
-            <div id="greske">
-                <?php
-                if(isset($greska))
-                    echo $greska;
-                ?>
-            </div>
+
             <div class="obrazac_prijave">
                 <form method="get" action="prijava.php" novalidate>
                     <label for="korime">Korisničko ime: </label><input type="text" name="korime" id="korime" maxlength="25" required><br><br>
@@ -212,6 +201,5 @@ if(isset($_GET['gumbSubmit'])) {
     </body>
 </html>
 <?php 
-
     $b->zatvoriDB();
 ?>

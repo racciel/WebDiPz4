@@ -5,6 +5,10 @@ include('../baza.class.php');
 include('../dnevnik.class.php');
 session_start();
 
+if(isset($_SESSION['tip'])) {
+    header('Location: ../index.php');
+}
+
 $dnevnik = new Dnevnik(); 
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
@@ -64,12 +68,6 @@ if(isset($_GET['gumbSubmit'])) {
         </script>";
 }
 
-if(isset($_SESSION['tip'])) {
-    setcookie("korisnik", $korime, false, "/", false);
-    setcookie("tip", $_SESSION['tip'], false, "/", false);
-
-    header("Location: ./../index.php");
-}
 ?>
 
 
@@ -201,5 +199,11 @@ if(isset($_SESSION['tip'])) {
     </body>
 </html>
 <?php 
+if(isset($_SESSION['tip'])) {
+    setcookie("korisnik", $korime, false, "/", false);
+    setcookie("tip", $_SESSION['tip'], false, "/", false);
+    
+    header("Location: ./../index.php");
+}
     $b->zatvoriDB();
 ?>

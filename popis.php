@@ -5,6 +5,11 @@ include('baza.class.php');
 include('dnevnik.class.php');
 session_start();
 
+if (!isset($_SESSION["tip"])) {
+    header("Location: ./obrasci/prijava.php");
+    exit();
+} 
+
 $dnevnik = new Dnevnik(); 
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";

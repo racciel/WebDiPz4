@@ -103,10 +103,7 @@ if(isset($_SESSION['username'])){
             }
         
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-    <script src="./js/aleja_jquery.js" type="text/javascript"></script>
-</head>
+    </head>
     <body id="tijelo">
         <header id="zaglavlje">
             
@@ -166,6 +163,68 @@ if(isset($_SESSION['username'])){
         </nav>
         
         <main>
+        <table>
+            <caption>
+                Datoteke
+            </caption>
+            <thead>
+                <th>
+                    id
+                </th>
+                <th>
+                    naziv
+                </th>
+                <th>
+                    kategorija
+                </th>
+                <th>
+                    datum i vrijeme
+                </th>
+                <th>
+                    opis
+                </th>
+                <th>
+                    boja
+                </th>
+                <th>
+                    orašasti plodovi
+                </th>
+                <th>
+                    agrumi
+                </th>
+                <th>
+                    laktoza
+                </th>
+                <th>
+                    gluten
+                </th>
+            </thead>
+            <tbody>
+        <?php 
+            $upit = "SELECT DISTINCT * FROM dz4_obrazac ORDER BY ekstenzija ASC";
+            $odgovor = $b->selectDB($upit);
+            if($odgovor) {
+                while($red = $odgovor->fetch_array()) {
+                    echo 
+                    "<tr>
+                        <td>".$red['id']."</td>
+                        <td>".$red['datoteka']."</td>
+                        <td>".$red['kategorija']."</td>
+                        <td>".$red['datumVrijeme']."</td>
+                        <td>".$red['opis']."</td>
+                        <td>".$red['boja']."</td>
+                        <td>".$red['orasasti']."</td>
+                        <td>".$red['agrumi']."</td>
+                        <td>".$red['laktoza']."</td>
+                        <td>".$red['gluten']."</td>
+                    </tr>
+                    ";
+                }
+            }
+        ?>    
+            </tbody>
+        </table>
+            <!--
             <div class="obrazac_multimedije">
                 <form method="get" action=" http://barka.foi.hr/WebDiP/2021/materijali/zadace/ispis_forme.php">
                     <label for="trazi">Pretraži: </label><input type="search" name="trazi" id="trazi"> <input type="submit" value="TRAŽI">
@@ -222,7 +281,7 @@ if(isset($_SESSION['username'])){
                 <h1>Lemur</h1>
                 <audio src="./materijali/lemur.mp3" controls></audio>
             </div>
-            
+                -->
                        
         </main>
         <footer>

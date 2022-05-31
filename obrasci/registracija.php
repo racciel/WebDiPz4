@@ -10,7 +10,7 @@ $dnevnik = new Dnevnik();
 
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
 
-$korisnik = $_SESSION['username'];
+
 $b = new Baza();
 $b->spojiDB();
 if(isset($_SESSION['username'])){

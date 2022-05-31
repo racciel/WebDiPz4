@@ -8,7 +8,6 @@ class Dnevnik {
     }
         
     /**
-     * Funkcija za dodavanje u dnevnik!
      * @param type $tekst
      * @param type $baza - koristi bazu
      */
@@ -17,7 +16,7 @@ class Dnevnik {
     
     public function spremiDnevnik($tekst,$baza=false) {
         if($baza){
-            //TODO spremi u bazu
+            
         } else {
             $f = fopen($this->nazivDatoteke,"a+");
             //mktime(hour, minutes, seconds, month, day, year) tako nesto
@@ -28,7 +27,7 @@ class Dnevnik {
     
     public function citajDnevnik($baza=false){
         if($baza){
-            //TODO spremi u bazu
+            
         } else {
             return file($this->nazivDatoteke);
         }

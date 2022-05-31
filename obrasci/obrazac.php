@@ -6,6 +6,11 @@ include('../dnevnik.class.php');
 session_start();
 ob_start();
 
+if (!isset($_SESSION["tip"])) {
+    header("Location: ./prijava.php");
+    exit();
+} 
+
 $dnevnik = new Dnevnik(); 
 $putanja = dirname(getcwd());
 $putanjaDnevnik = "$putanja/izvorne_datoteke/dnevnik.log";
@@ -162,12 +167,11 @@ if(isset($_SESSION['username'])){
                 if(isset($_GET['salji']))
                 {
                 if(!empty($_GET['orijentacija']) &&
-                    !empty($_GET['korime']) &&
+                    !empty($_GET['boja']) &&
                     !empty($_GET['naziv']) &&
                     !empty($_GET['kategorija']) &&
                     !empty($_GET['datvrijeme']) &&
-                    !empty($_GET['opis']) &&
-                    !empty($_GET['naziv'])
+                    !empty($_GET['opis'])
                 )
                 {
                     $sveoke = true;
@@ -186,7 +190,6 @@ if(isset($_SESSION['username'])){
 
 
                 if($_GET['orijentacija'] != 0) {
-                    $sveoke = true;
                     echo "<style>";
                     if($_GET['orijentacija'] == 2 || $_COOKIE['orijentacija'] == 2) {
                         echo "form>*{
@@ -222,29 +225,32 @@ if(isset($_SESSION['username'])){
                     </script>
                     ";
                 }
+            }
                 else {
-                    echo
-                    "
+                    ?>
                     <script>
                     var xhr = new XMLHttpRequest();
-                    var url = './datoteka.php?naziv=$naziv;
+                    var url = './datoteka.php?naziv=<?php $naziv ?>';
                     
                     xhr.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             console.log(this.responseText);
                             var odgovor = JSON.parse(this.responseText);
-                            if(odgovor == 't'){
-                                
+                            if(odgovor == '<?php echo $naziv ?>'){
+                                <?php
+                                    $modificiranNaziv = false;
+                                ?>
                             }
                             else {
-                                
+                                <?php
+                                    $modificiranNaziv = true;
+                                ?>
                             }
 
                         }
                     </script>
-                    ";
+                    <?php
                 }
-            }
 
             if($sveoke) {
                 $datoteka = $_GET['naziv'];
@@ -257,7 +263,7 @@ if(isset($_SESSION['username'])){
                 $laktoza = NULL;
                 $gluten = NULL;
 
-                if(isset($_GET['orasasti']))
+                if(isset($_GET['orplodovi']))
                     $orasasti = 1;
                 if(isset($_GET['agrumi']))
                     $agrumi = 1;
@@ -269,18 +275,32 @@ if(isset($_SESSION['username'])){
                 $b = new Baza();
                 $b->spojiDB();
 
-                $preslozeno = $datumVrijeme[6].$datumVrijeme[7].$datumVrijeme[8].$datumVrijeme[9]."-".$datumVrijeme[0].$datumVrijeme[1]."-".$datumVrijeme[3].$datumVrijeme[4]." ".$datumVrijeme[12].$datumVrijeme[13].":".$datumVrijeme[14].$datumVrijeme[15].":".$datumVrijeme[16].$datumVrijeme[17];
+                    $preslozeno = $datumVrijeme[6].$datumVrijeme[7].$datumVrijeme[8].$datumVrijeme[9]."-".$datumVrijeme[0].$datumVrijeme[1]."-".$datumVrijeme[3].$datumVrijeme[4]." ".$datumVrijeme[12].$datumVrijeme[13].":".$datumVrijeme[14].$datumVrijeme[15].":".$datumVrijeme[16].$datumVrijeme[17];
 
-                $upit = "INSERT INTO dz4_obrazac VALUES(default, '$datoteka', '$kategorija', '$preslozeno', '$opis', '$boja', '$orasasti', '$agrumi', '$laktoza', '$gluten');";
-                $odgovor = $b->updateDB($upit);
-                if($odgovor) {
-                    header('Location: ../multimedija.php');
-                }
+                    if($modificiranNaziv){
+                        $upit = "SEELCT MAX(id) FROM dz4_obrazac";
+                        $odgovor = $b->selectDB($upit);
+                        $red = $odgovor->fetch_array();
+                        $datoteka = $datoteka.($red['id']+1);
+                    }
 
-                $b->zatvoriDB();
+                    echo "
+                    <script>
+                        alert($datoteka);
+                    </script>
+                    ";
+                    $ekstenzija = $provjera[count($provjera)-1];
+                    $upit = "INSERT INTO dz4_obrazac VALUES(default, '$datoteka', '$ekstenzija' , '$kategorija', '$preslozeno', '$opis', '$boja', '$orasasti', '$agrumi', '$laktoza', '$gluten');";
+                    $odgovor = $b->updateDB($upit);
+                    if($odgovor) {
+                        header('Location: ../multimedija.php');
+                    }
+
+                    $b->zatvoriDB();
+
             }
 
-            }
+        }
                 
                 ?>
             </div>
